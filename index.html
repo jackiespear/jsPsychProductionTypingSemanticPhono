@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Recognition Experiment</title>
+        <meta name="author" content="Jackie Spear"/>
+        <meta name="description" content="A psychology recognition memory experiment"/>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <script src="jspsych-6.3.1/jspsych.js"></script>
+        <script src="jspsych-6.3.1/plugins/jspsych-html-keyboard-response.js"></script>
+        <script src="jspsych-6.3.1/plugins/jspsych-external-html.js"></script>
+        <script src="jspsych-6.3.1/plugins/jspsych-survey-text.js"></script>
+        <script src="jspsych-6.3.1/plugins/jspsych-survey-html-form.js"></script>
+        <script src="jspsych-6.3.1/plugins/jspsych-fullscreen.js"></script>
+        <script src='stimuli/exp_text.js'></script>
+        <script src='stimuli/study_words_consist_practice.js'></script>
+        <script src='stimuli/study_words_inconsist_practice.js'></script>
+        <script src='words.js'></script>
+        <link href="jspsych-6.3.1/css/jspsych.css" rel="stylesheet" type="text/css"></link>
+    </head>
+ 
+<script>
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////         Word Randomization and study/test list construction                //////////// 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//console.table(words); //printing the words as they're read in
+
+function shuffle_variable (studywords_list) {
+  for(i=0; i<studywords_list.length; i ++) {
+    W1 = studywords_list[i].word1;
+    W2 = studywords_list[i].word2;
+    W3 = studywords_list[i].word3;
+    WL = [W1, W2, W3];
+    My_ord = jsPsych.randomization.repeat([0,1,2],1);
+
+    studywords_list[i].word1 = WL[My_ord[0]];
+    studywords_list[i].word2 = WL[My_ord[1]];
+    studywords_list[i].word3 = WL[My_ord[2]];
+  }
+  return(studywords_list)
+}
+studywords = [];
+studywords = shuffle_variable(words); //this will shuffle the columns
+//console.log(studywords);
+//console.table(studywords);
+
+studywords=jsPsych.randomization.repeat(studywords, 1); //this will shuffle the rows
+//console.log(studywords[1]);
+//console.log(studywords[1].word1);
+//console.table(studywords); 
+
+studywords2 = [];
+studywords2 = studywords; 
+
+//subsetting the array to be only two words for construction of word pairs
+const result = studywords2.map(({word1, word2})=>{ 
+  let doc={word1, word2};
+  return doc;
+}); 
+
+//console.table(result); //This works!!!
+
+//subsetting the words into 3 arrays for produce words, read words, and new words
+var produce_words = result.slice(0, 20); //produce words
+//console.table(produce_words);
+
+var read_words = result.slice(20, 40); //read words
+//console.table(read_words);
+
+var new_words = result.slice(40, 80); //new lures for test
+//console.table(new_words);
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//creating text variables to concatenate onto each word for the test phase
+var text_test_all = '<p style="font-size: 48px;">';
+var text_test_all2 = '</p>'
+var text_test_produce_type = 'old'; // format the rest like this
+var text_test_produce_category = 'produce'
+var text_test_read_type = 'old';
+var text_test_read_category = 'read'
+var text_test_new_type = 'new';  
+var text_test_new_category = 'new' 
+
+//var test123 =  text_test_new.data.type + "word" ;
+//console.log(test123);
+
+var produce_words_test = produce_words.map(({word2})=>{ //subsetting produced words to be only 1 word for the test words
+  let doc={word2};
+  return doc;
+});
+//console.table(produce_words_test);
+
+var read_words_test = read_words.map(({word2})=>{ //subsetting read words to be only 1 word for the test words
+  let doc={word2};
+  return doc;
+});
+//console.table(read_words_test);
+
+var new_words_test = new_words.map(({word2})=>{ //subsetting new words to be only 1 word for the test words
+  let doc={word2};
+  return doc;
+});
+//console.table(new_words_test);
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//adding formatting to the produce words at test
+for (var i = 0; i < produce_words_test.length; i++) {
+  produce_words_test[i].word2 = text_test_all + produce_words_test[i].word2 + text_test_all2;// + text_test_produce;
+  produce_words_test[i].type = text_test_produce_type;  ///            !!! this is adding data as a third object in the data to be called, and then calls the string to be added in this object
+  produce_words_test[i].category = text_test_produce_category;
+};
+//console.table(produce_words_test);
+
+//adding formatting to the read words at test
+for (var i = 0; i < read_words_test.length; i++) {
+  read_words_test[i].word2 = text_test_all + read_words_test[i].word2 + text_test_all2;
+  read_words_test[i].type = text_test_read_type;
+  read_words_test[i].category = text_test_read_category;
+};
+//console.table(read_words_test);
+
+//adding formatting to the new words at test
+for (var i = 0; i < new_words_test.length; i++) {
+  new_words_test[i].word2 = text_test_all + new_words_test[i].word2 + text_test_all2;
+  new_words_test[i].type = text_test_new_type;
+  new_words_test[i].category = text_test_new_category;
+};
+//console.table(new_words_test);
+
+//make the list of test words to present during the test phase
+var test_words_mixed = produce_words_test.concat(read_words_test, new_words_test);
+//console.table(test_words_mixed);
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//creating text variables to concatenate onto each word for the study phase
+var text_produce1 = '<span style="color: green">';
+var text_read1 = '<span style="color: red">';
+var text_produce2 = '</span></p>';
+var text_produce_type = 'old';
+var text_produce_category = 'produce';
+var text_read2 = '</span></p>';
+var text_read_type = 'old';
+var text_read_category = 'read'
+
+//adding formatting to the produce words
+for (var i = 0; i < produce_words.length; i++) {
+  produce_words[i].word2 = text_produce1 + produce_words[i].word2 + text_produce2;
+  produce_words[i].type = text_produce_type;
+  produce_words[i].category = text_produce_category;
+};
+//console.table(produce_words);
+
+//adding text to the read words
+for (var i = 0; i < read_words.length; i++) {
+  read_words[i].word2 = text_read1 + read_words[i].word2 + text_read2;
+  read_words[i].type = text_read_type;
+  read_words[i].category = text_read_category;
+};
+//console.table(read_words);
+
+//Make the list or study words to present during the study phase
+var study_words_mixed = produce_words.concat(read_words);
+//console.table(study_words_mixed);
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////        Make study/test lists for the pure produce list         ////////////////////// 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//formatting the test words for the pure produce condition. all is the same execept for condition and no read words
+
+var study_words_pureproduce = study_words_mixed;
+
+study_words_pureproduce = JSON.stringify(study_words_pureproduce).replace(/red/g, 'green');
+study_words_pureproduce = JSON.parse(study_words_pureproduce);
+
+var test_words_pureproduce = test_words_mixed;
+
+// changing the condition in the test words to be pureproduce 
+test_words_pureproduce = JSON.stringify(test_words_pureproduce).replace(/mixed/g, 'pureproduce');
+test_words_pureproduce = JSON.parse(test_words_pureproduce);
+
+/* for (let i = 0; i < test_words_pureproduce.length; i++) { ////didn't work, changed everything
+    test_words_pureproduce[i] = JSON.stringify(test_words_pureproduce[i]).replace(/mixed/g, 'pureproduce');
+    test_words_pureproduce[i] = JSON.parse(test_words_pureproduce[i]);
+}; */
+
+//replacing all instances of 'read' to produce
+test_words_pureproduce = JSON.stringify(test_words_pureproduce).replace(/read/g, 'produce');
+test_words_pureproduce = JSON.parse(test_words_pureproduce);
+
+//formatting the study words
+var study_words_pureproduce = study_words_mixed;
+// changing the condition in the test words to be pureproduce 
+study_words_pureproduce = JSON.stringify(study_words_pureproduce).replace(/mixed/g, 'pureproduce');
+study_words_pureproduce = JSON.parse(study_words_pureproduce);
+
+// changing the red to green in the test words to be pureproduce 
+study_words_pureproduce = JSON.stringify(study_words_pureproduce).replace(/red/g, 'green');
+study_words_pureproduce = JSON.parse(study_words_pureproduce);
+
+// changing the category to be all produce (no read) 
+study_words_pureproduce = JSON.stringify(study_words_pureproduce).replace(/read/g, 'produce');
+study_words_pureproduce = JSON.parse(study_words_pureproduce);
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////        Make study/test lists for the pure read list            ////////////////////// 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//formatting the test words for the pure read condition. all is the same execept for condition and no produce words
+var test_words_pureread = test_words_mixed;
+// changing the condition in the test words to be pureread 
+test_words_pureread = JSON.stringify(test_words_pureread).replace(/mixed/g, 'pureread');
+test_words_pureread = JSON.parse(test_words_pureread);
+
+//replacing all instances of 'produce' to read
+test_words_pureread = JSON.stringify(test_words_pureread).replace(/produce/g, 'read');
+test_words_pureread = JSON.parse(test_words_pureread);
+
+//formatting the study words /////////////////////
+var study_words_pureread = study_words_mixed;
+
+// changing the condition in the study words to be pureread 
+study_words_pureread = JSON.stringify(study_words_pureread).replace(/mixed/g, 'pureread');
+study_words_pureread = JSON.parse(study_words_pureread);
+
+// changing the green to red in the study words to be pureread 
+study_words_pureread = JSON.stringify(study_words_pureread).replace(/green/g, 'red');
+study_words_pureread = JSON.parse(study_words_pureread);
+
+
+// changing the category to be all read (no produce)
+study_words_pureread = JSON.stringify(study_words_pureread).replace(/produce/g, 'read');
+study_words_pureread = JSON.parse(study_words_pureread);
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//  Randomly Assign one of the three between-subjects conditions: mixed-list, pure-produce, or pure-read  //
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+var condition_assignment = jsPsych.randomization.sampleWithoutReplacement(['pureread', 'pureproduce', 'mixed'], 1)[0];
+jsPsych.data.addProperties({
+  condition: condition_assignment
+});
+
+//console.log(condition_assignment);
+
+//trial information for each condition -  will call a different list depending on condition
+var list_1 = study_words_pureproduce;
+var list_2 = study_words_pureread;
+var list_3 = study_words_mixed;
+
+var list_1T = test_words_pureproduce;
+var list_2T = test_words_pureread;
+var list_3T = test_words_mixed;
+
+// create a variable to hold the trial information, which changes based on condition
+var stimuli = [];
+var stimuli_test= [];
+if (condition_assignment == "pureread") { //if pure_read is sampled from above randomization routine, the stimuli presented will be..
+  stimuli = list_2;
+  stimuli_test = list_2T;
+} else if (condition_assignment == "pureread") {
+  stimuli = list_2;
+  stimuli_test = list_2T;
+}; 
+
+//original randomization procedure for all 3 conditions
+/* var stimuli = [];
+var stimuli_test= [];
+if (condition_assignment == "pureproduce") { //if pure_read is sampled from above randomization routine, the stimuli presented will be..
+  stimuli = list_1;
+  stimuli_test = list_1T;
+} else if (condition_assignment == "pureread") {
+  stimuli = list_2;
+  stimuli_test = list_2T;
+} else if (condition_assignment == "mixed") {
+  stimuli = list_3;
+  stimuli_test = list_3T;
+};  */
+
+//console.table(stimuli);
+//console.log(stimuli);
+//console.table(stimuli_test);
+
+</script>
+
+<!-- Allow remote storage on Google Firebase -->
+<!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/7.12.0/firebase-app.js"></script>
+
+<!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+<script src="https://www.gstatic.com/firebasejs/7.12.0/firebase-analytics.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.12.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.12.0/firebase-database.js"></script>
+
+<!-- enter some javascript code-->
+<script type="text/javascript">
+
+// See: https://crumplab.github.io/jspsychrexamples/FirebaseDemo/Instructions_FirebaseDemo.html 
+// Your web app's Firebase configuration (given to us by firebase)
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////      Change this block of code for every new Firebase database         //////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Import the functions you need from the SDKs you need
+//import { initializeApp } from "firebase/app";
+//import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+//https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  databaseURL: "https://productiontypingphdexp1-default-rtdb.firebaseio.com/",
+  apiKey: "AIzaSyC4Ob7cXgxwyF0UbGVpbh1YRnk6ijcekoY",
+  authDomain: "productiontypingphdexp1.firebaseapp.com",
+  projectId: "productiontypingphdexp1",
+  storageBucket: "productiontypingphdexp1.appspot.com",
+  messagingSenderId: "1098016521877",
+  appId: "1:1098016521877:web:45c262bab69e500425e59c",
+  measurementId: "G-RRQMSNJ9QL"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+  firebase.analytics();
+
+  // Get a reference to the database service
+  var database = firebase.database();
+
+   // login anonymous user
+   firebase.auth().signInAnonymously().catch(function(error) {
+  // Handle Errors here.
+  var errorCode = error.code;
+  var errorMessage = error.message;
+  // ...
+});
+
+  /////////////////////////////////////////////////////////////////
+  
+
+  // Get a reference to the database service
+  var database = firebase.database();
+
+   // login anonymous user
+   firebase.auth().signInAnonymously().catch(function(error) {
+  // Handle Errors here.
+  var errorCode = error.code;
+  var errorMessage = error.message;
+  // ...
+});
+  
+  // check if user can sign on to firebase 
+  firebase.auth().onAuthStateChanged(function(user) {
+  if (user) {
+    // User is signed in.
+    var isAnonymous = user.isAnonymous;
+    var uid = user.uid;
+    // ...
+  } else {
+    // User is signed out.
+    // ...
+  }
+  // ...
+});
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////                      Start jsPsych Experiment here                     //////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+/* experiment parameters */
+// generate a random subject ID with 15 characters
+var subject_id = jsPsych.randomization.randomID(15);
+
+// get the id number for the SONA participant so that we can grant credits automatically
+var SONA_ID = getUrlParam('id','Empty');
+
+function getUrlVars() {
+    var vars = {};
+    var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi,function(m,key,value) {
+        vars[key] = value;
+    });
+    return vars;
+}
+
+// Get the time that the experiment began (ms since 1 January 1970)
+var start_time = new Date().getTime();
+
+// record this data to all trials
+jsPsych.data.addProperties({
+  subject: subject_id,
+  StartTime: start_time,
+});
+    
+// to check for consent
+var consent_check = false;
+    
+ // function to check if in fullscreen mode
+  function is_fullscreen(){
+  // check if in fullscreen mode
+  if(window.innerWidth == screen.width && window.innerHeight == screen.height){
+    return true;
+  }else{return false}
+  }
+
+  function getUrlParam(parameter, defaultvalue){
+    var urlparameter = defaultvalue;
+    if(window.location.href.indexOf(parameter) > -1){
+        urlparameter = getUrlVars()[parameter];
+        }
+    return urlparameter;
+  }
+
+// set up consent procedure
+var consent = {
+  type: "external-html",
+  url: "forms/consent.html",
+  cont_btn: "consent-btns",
+  data: {"phase": "Consent"},
+};
+
+// set up welcome screen 
+var welcome = {
+  type: "html-keyboard-response",
+  stimulus: welcome_text,
+  data: {"phase": "Welcome",
+  },
+};
+
+// set up instructions screen (including attention check)
+var instructions = {
+  timeline: [
+    // first trial is displaying the experiment instructions
+    {
+      type: "html-keyboard-response",
+      stimulus: instruction_text,
+      data: {"phase": "Instructions"},
+    },
+    // second trial is displaying the instructions check
+    {
+      type: "survey-text",
+      questions: [
+        {
+          prompt: attention_check_text, 
+          columns: 20, 
+          rows: 1, 
+          required: true, 
+          name: "Attention_check"
+        },
+      ],
+      data: {"phase": "Attention_Check"},
+    },
+  ],
+  // wait 1 second after completion
+  post_trial_gap: 1000,
+  // record if in fullscreen
+  on_finish: function(data){
+    data.fullscreen = is_fullscreen();
+  },
+ // if the participant recorded anything except "4" then repeat (answer to 2+2 in the instructions)
+ loop_function: function(data){
+    console.log(data.values()[1]);
+    response_data = data.values()[1].response;
+    if(response_data.Attention_check == "4"){
+      return false
+    }else{
+      return true
+    }
+  },
+};
+
+
+
+//Present the instruction to produce or read during PRACTICE phase
+var study_practice = {
+    type: 'survey-html-form',
+    button_label: 'Press enter to continue',
+    preamble: function(){
+        var html = `
+          <p>${jsPsych.timelineVariable('stimulus')}</p>  
+          `
+        return html;
+    },
+    html:  '<p> <input type="text" onkeydown="return (event.keycode!=13);" id="test-resp-box" name="response" size="10" style=color:white;/></p>', //color being white will not mirror typed word to the screen
+    post_trial_gap: 500, // changing this to 3 seconds so that each trail is equal (e.g. produce vs. read),
+    trial_duration: 3000,
+    data: {phase:"practice", type: jsPsych.timelineVariable('data')},
+    autofocus: 'test-resp-box',
+
+};
+
+//Putting the study words and study instruction together for the PRACTICE phase
+ var study_procedure_practice = {
+   timeline: [study_practice],
+   timeline_variables: studywords_practice,
+   randomize_order: true,
+ };
+
+//test phase instructions presented after study PRACTICE phase is over
+var practice_test_instructions = {
+  type: "html-keyboard-response",
+  stimulus: post_practice_text,
+  choices: ['w'],
+  data: {"phase": "Practice_Test_Instructions",
+},
+};
+
+
+//Study Phase
+var study_instructions123 = {
+    type: 'survey-html-form',
+    button_label: 'Press enter to continue',
+    preamble: function(){
+        var html = `
+          <p style='font-size: 48px;'>${jsPsych.timelineVariable('word1')} - ${jsPsych.timelineVariable('word2')} </p>
+          `
+        return html;
+    },
+    html:  '<p> <input type="text" onkeydown="return (event.keycode!=13);" id="test-resp-box" name="response" size="10" style=color:white;/></p>', //color being white will not mirror typed word to the screen
+    post_trial_gap: 500, // changing this to 3 seconds so that each trail is equal (e.g. produce vs. read),
+    trial_duration: 3000, //change back to 3000
+    data: {phase:"study", category: jsPsych.timelineVariable("category"), type: jsPsych.timelineVariable("type"), word1: jsPsych.timelineVariable("word1"), word2: jsPsych.timelineVariable("word2")},
+    autofocus: 'test-resp-box',
+    //timeline_variables: study_instructions,
+    //randomize_order:true,
+};
+
+//Putting the study words and study instruction together
+ var study_procedure = {
+   timeline: [study_instructions123],
+   timeline_variables: stimuli,
+   randomize_order: true,
+ };
+
+ //test phase instructions presented after study phase is over
+var test_instructions = {
+  type: "html-keyboard-response",
+  stimulus: test_instruction_text,
+  choices: ['i'],
+  data: {"phase": "Test_Instructions",
+  },
+};
+
+//Present the test words
+var test_phase = {
+    timeline: [
+        {
+            type: 'html-keyboard-response',
+            stimulus: jsPsych.timelineVariable('word2'),
+            choices: ['y', 'n'],
+            data: {type: jsPsych.timelineVariable("type"), category: jsPsych.timelineVariable("category"), phase: "test"},
+            response_ends_trial:true,
+            timeline_variables: stimuli_test,
+            post_trial_gap: 500, // like a blank 500
+             on_finish: function(data) {
+              if (data.response == "y" && data.type == "old") {
+                data.correct = 1;
+              } else if (data.response == "n" && data.type == "new") {
+                data.correct = 1;
+              }
+              else {
+                data.correct = 0;
+              }
+            } 
+        }
+    ],
+    randomize_order: true,
+    timeline_variables: stimuli_test,
+};
+
+// set up debrief block
+var debrief = {
+  type: "html-keyboard-response",
+  stimulus: debrief_text,
+  //post_trial_gap: 1000
+};
+
+// set up full_screen mode
+var enter_full_screen = {
+  type: 'fullscreen',
+  fullscreen_mode: true,
+  message: fullscreen_prompt,
+  // disable button for 15 seconds to force reading
+  on_load: function(data){
+    var test = document.querySelectorAll('button')[0];
+    test.disabled = true;
+    setTimeout(() => {test.disabled = false;},15000); // setting timeout to 15 seconds here
+  }
+};
+
+// prepare an end to full_screen mode 
+var exit_full_screen = {
+  type: 'fullscreen',
+  fullscreen_mode: false,
+  // save data when going through exit full screen routine
+  // will save data at this point if they have alrady exited full screen
+  on_finish: function() {
+    firebase.database().ref(subject_id).set({
+      data: jsPsych.data.get().values()
+    })
+  }
+};
+
+// if a subject does not consent //
+var no_consent = {
+  timeline: [
+    {
+      type: "external-html",
+      url: "forms/no_consent_deb.html",
+      data: {"phase": "No_consent"},
+    },
+    ],
+  conditional_function: function(data){
+    if(consent_check == false){
+      return true
+    }else{
+      return false
+    }
+  }
+};
+
+
+
+/*set up experiment structure*/
+var timeline = [];
+timeline.push(consent);
+timeline.push(no_consent);
+timeline.push(welcome);
+timeline.push(enter_full_screen);
+timeline.push(instructions);
+timeline.push(study_procedure_practice);
+timeline.push(practice_test_instructions);
+timeline.push(study_procedure); // this is new
+timeline.push(test_instructions);
+timeline.push(test_phase);
+timeline.push(exit_full_screen);
+timeline.push(debrief);
+
+/*start experiment*/
+jsPsych.init({
+    timeline: timeline,
+    on_finish: function() {
+     window.location.href = "https://umanitobapsych.sona-systems.com/webstudy_credit.aspx?experiment_id=1303&credit_token=a035fd3a62b541dcae118ab791f90307&survey_code="+SONA_ID; //changed
+      // display data at end:
+      //jsPsych.data.displayData(); //commented out for final version
+    }
+});
+
+
+  </script>
+  </html>
