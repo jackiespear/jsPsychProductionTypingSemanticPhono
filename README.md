@@ -1,3 +1,3 @@
 # jsPsychProductionTypingSemanticPhono
 
-A production effect experiment with Semantically similar words and phonologically similar words
+A production effect experiment with semantically similar words and phonologically similar words.
