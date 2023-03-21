@@ -1,4 +1,4 @@
-studywords = [
+studywords5 = [
 {"stimulus":"<p style='font-size: 48px;'><span style='color: green'>GLOVE</span></p>","data":{"type":"old","condition":"semantic_produced","list":"HAND","word":"glove"}},
 {"stimulus":"<p style='font-size: 48px;'><span style='color: green'>FINGER</span></p>","data":{"type":"old","condition":"semantic_produced","list":"HAND","word":"finger"}},
 {"stimulus":"<p style='font-size: 48px;'><span style='color: green'>SHAKE</span></p>","data":{"type":"old","condition":"semantic_produced","list":"HAND","word":"shake"}},

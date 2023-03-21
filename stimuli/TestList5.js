@@ -1,4 +1,4 @@
-testwords = [
+testwords5 = [
 {"stimulus":"<p style='font-size: 48px;'>GLOVE</p>","data":{"type":"old","condition":"semantic_produced","list":"HAND","word":"glove"}},
 {"stimulus":"<p style='font-size: 48px;'>SHAKE</p>","data":{"type":"old","condition":"semantic_produced","list":"HAND","word":"shake"}},
 {"stimulus":"<p style='font-size: 48px;'>THUMB</p>","data":{"type":"old","condition":"semantic_produced","list":"HAND","word":"thumb"}},

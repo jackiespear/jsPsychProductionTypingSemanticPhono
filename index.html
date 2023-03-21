@@ -10,6 +10,9 @@
         <script src="jspsych-6.3.1/plugins/jspsych-external-html.js"></script>
         <script src="jspsych-6.3.1/plugins/jspsych-survey-text.js"></script>
         <script src="jspsych-6.3.1/plugins/jspsych-survey-html-form.js"></script>
+        <script src="jspsych-6.3.1/plugins/jspsych-survey-html-form-orig.js"></script>
+        <script src="jspsych-6.3.1/plugins/jspsych-html-button-response.js"></script>
+        <script src="jspsych-6.3.1/plugins/jspsych-html-button-response-orig.js"></script>
         <script src="jspsych-6.3.1/plugins/jspsych-fullscreen.js"></script>
         <script src='stimuli/exp_text.js'></script>
         <script src='stimuli/study_words_consist_practice.js'></script>
@@ -31,9 +34,6 @@
  
 <script>
 
-var study_words_pureproduce = study_words_mixed;
-
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                       Randomly Assign one of the between-subjects counterbalanced lists              //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -43,43 +43,43 @@ jsPsych.data.addProperties({
   condition: condition_assignment
 });
 
-//console.log(condition_assignment);
+console.log(condition_assignment);
 
 //trial information for each condition -  will call a different list depending on condition
-var list_1 = study_words_pureproduce;
-var list_2 = study_words_pureread;
-var list_3 = study_words_mixed;
-
-var list_1T = test_words_pureproduce;
-var list_2T = test_words_pureread;
-var list_3T = test_words_mixed;
+//var list_1 = study_words_pureproduce;
+//var list_2 = study_words_pureread;
+//var list_3 = study_words_mixed;
+//
+//var list_1T = test_words_pureproduce;
+//var list_2T = test_words_pureread;
+//var list_3T = test_words_mixed;
 
 // create a variable to hold the trial information, which changes based on condition
 var stimuli = [];
 var stimuli_test= [];
 if (condition_assignment == "List1") { //if List1 is sampled from above randomization routine, the stimuli presented will be...
-  stimuli = StudyList1;
-  stimuli_test = TestList1;
+  stimuli = studywords1;
+  stimuli_test = testwords1;
 } else if (condition_assignment == "List2") {
-  stimuli = StudyList2;
-  stimuli_test = TestList2;
+  stimuli = studywords2;
+  stimuli_test = testwords2;
 } else if (condition_assignment == "List3") {
-  stimuli = StudyList3;
-  stimuli_test = TestList3;
+  stimuli = studywords3;
+  stimuli_test = testwords3;
 } else if (condition_assignment == "List4") {
-  stimuli = StudyList4;
-  stimuli_test = TestList4;
+  stimuli = studywords4;
+  stimuli_test = testwords4;
 } else if (condition_assignment == "List5") {
-  stimuli = StudyList5;
-  stimuli_test = TestList5;
+  stimuli = studywords5;
+  stimuli_test = testwords5;
 } else if (condition_assignment == "List6") {
-  stimuli = StudyList6;
-  stimuli_test = TestList6;
+  stimuli = studywords6;
+  stimuli_test = testwords6;
 };  
 
-//console.table(stimuli);
+console.table(stimuli);
 //console.log(stimuli);
-//console.table(stimuli_test);
+console.table(stimuli_test);
 
 </script>
 
@@ -102,7 +102,7 @@ if (condition_assignment == "List1") { //if List1 is sampled from above randomiz
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////      Change this block of code for every new Firebase database         //////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+/* 
 // Import the functions you need from the SDKs you need
 //import { initializeApp } from "firebase/app";
 //import { getAnalytics } from "firebase/analytics";
@@ -164,7 +164,7 @@ firebase.initializeApp(firebaseConfig);
   }
   // ...
 });
-
+ */
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////                      Start jsPsych Experiment here                     //////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -312,14 +312,14 @@ var study_instructions123 = {
     button_label: 'Press enter to continue',
     preamble: function(){
         var html = `
-          <p style='font-size: 48px;'>${jsPsych.timelineVariable('word1')} - ${jsPsych.timelineVariable('word2')} </p>
+          <p style='font-size: 48px;'>${jsPsych.timelineVariable('stimulus')}</p>
           `
         return html;
     },
     html:  '<p> <input type="text" onkeydown="return (event.keycode!=13);" id="test-resp-box" name="response" size="10" style=color:white;/></p>', //color being white will not mirror typed word to the screen
     post_trial_gap: 500, // changing this to 3 seconds so that each trail is equal (e.g. produce vs. read),
-    trial_duration: 3000, //change back to 3000
-    data: {phase:"study", category: jsPsych.timelineVariable("category"), type: jsPsych.timelineVariable("type"), word1: jsPsych.timelineVariable("word1"), word2: jsPsych.timelineVariable("word2")},
+    trial_duration: 100, //change back to 3000
+    data: {phase:"study", data: jsPsych.timelineVariable("data")},
     autofocus: 'test-resp-box',
     //timeline_variables: study_instructions,
     //randomize_order:true,
@@ -346,16 +346,16 @@ var test_phase = {
     timeline: [
         {
             type: 'html-keyboard-response',
-            stimulus: jsPsych.timelineVariable('word2'),
+            stimulus: jsPsych.timelineVariable('stimulus'),
             choices: ['y', 'n'],
-            data: {type: jsPsych.timelineVariable("type"), category: jsPsych.timelineVariable("category"), phase: "test"},
+            data: {data: jsPsych.timelineVariable("data"), phase: "test"},
             response_ends_trial:true,
             timeline_variables: stimuli_test,
             post_trial_gap: 500, // like a blank 500
              on_finish: function(data) {
-              if (data.response == "y" && data.type == "old") {
+              if (data.response == "y" && data.data.type == "old") {
                 data.correct = 1;
-              } else if (data.response == "n" && data.type == "new") {
+              } else if (data.response == "n" && data.data.type == "new") {
                 data.correct = 1;
               }
               else {
@@ -366,6 +366,70 @@ var test_phase = {
     ],
     randomize_order: true,
     timeline_variables: stimuli_test,
+};
+
+var question_trial_sex = {
+  type: 'html-button-response-orig',
+  stimulus: '<p style="font-size:28px;">What is your sex assigned at birth?</p>',
+  choices: ['Female', 'Male', 'Other', 'Prefer not to answer'],
+  prompt: '<p>Please click one</p>',
+  on_finish: function(data) {
+              if (data.response == "0") {
+                data.sex = "Female";
+              } else if (data.response == "1") {
+                data.sex = "Male";
+              } else if (data.reponse == "2") {
+                data.sex = "Other";
+              }
+              else {
+                data.sex = "PreferNotAnswer";
+              }
+    }
+};
+
+var question_trial_gender = {
+  type: 'survey-html-form-orig',
+  button_label: 'Click here to continue',
+  trial_duration: 3000,
+  preamble: '<p>What is is your gender?<br>(Leave blank if you prefer not to answer)</p>',
+  html: '<p><input type="text" onkeydown="return (event.keycode!=13);" id="test-resp-box2" name="gender" size="10" style=color:black;/></p>',
+  autofocus: 'test-resp-box2',
+};
+
+var question_trial_age = {
+  type: 'survey-html-form-orig',
+  button_label: 'Click here to continue',
+  trial_duration: 3000,
+  preamble: '<p>What is is your age?<br>(Leave blank if you prefer not to answer)</p>',
+  html: '<p><input type="text" onkeydown="return (event.keycode!=13);" id="test-resp-box2" name="age" size="10" style=color:black;/></p>',
+  autofocus: 'test-resp-box2',
+};
+
+var question_trial_english = {
+  type: 'html-button-response-orig',
+  stimulus: '<p style="font-size:28px;">Is English your first language?</p>',
+  choices: ['Yes', 'No', 'Prefer not to answer'],
+  prompt: '<p>Please click one</p>',
+  on_finish: function(data) {
+              if (data.response == "0") {
+                data.english = "Yes";
+              } else if (data.response == "1") {
+                data.english = "No";
+              }
+              else {
+                data.english = "PreferNotAnswer";
+              }
+    }
+};
+
+var survey = {
+  data: {"phase": "Demographics"},
+  timeline: [
+    question_trial_sex,
+    question_trial_gender,
+    question_trial_age,
+    question_trial_english,
+  ]
 };
 
 // set up debrief block
@@ -421,26 +485,28 @@ var no_consent = {
 
 /*set up experiment structure*/
 var timeline = [];
-timeline.push(consent);
-timeline.push(no_consent);
-timeline.push(welcome);
-timeline.push(enter_full_screen);
+//timeline.push(consent);
+//timeline.push(no_consent);
+//timeline.push(welcome);
+//timeline.push(enter_full_screen);
 timeline.push(instructions);
-timeline.push(study_procedure_practice);
-timeline.push(practice_test_instructions);
+//timeline.push(study_procedure_practice);
+//timeline.push(practice_test_instructions);
+timeline.push(survey);
 timeline.push(study_procedure); // this is new
 timeline.push(test_instructions);
 timeline.push(test_phase);
-timeline.push(exit_full_screen);
-timeline.push(debrief);
+//timeline.push(survey);
+//timeline.push(exit_full_screen);
+//timeline.push(debrief);
 
 /*start experiment*/
 jsPsych.init({
     timeline: timeline,
     on_finish: function() {
-     window.location.href = "https://umanitobapsych.sona-systems.com/webstudy_credit.aspx?experiment_id=1303&credit_token=a035fd3a62b541dcae118ab791f90307&survey_code="+SONA_ID; //changed
+     //window.location.href = "https://umanitobapsych.sona-systems.com/webstudy_credit.aspx?experiment_id=1303&credit_token=a035fd3a62b541dcae118ab791f90307&survey_code="+SONA_ID; //changed
       // display data at end:
-      //jsPsych.data.displayData(); //commented out for final version
+      jsPsych.data.displayData(); //commented out for final version
     }
 });
 

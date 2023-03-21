@@ -1,4 +1,4 @@
-studywords = [
+studywords2 = [
 {"stimulus":"<p style='font-size: 48px;'><span style='color: green'>HONEY</span></p>","data":{"type":"old","condition":"semantic_produced","list":"SWEET","word":"honey"}},
 {"stimulus":"<p style='font-size: 48px;'><span style='color: green'>BITTER</span></p>","data":{"type":"old","condition":"semantic_produced","list":"SWEET","word":"bitter"}},
 {"stimulus":"<p style='font-size: 48px;'><span style='color: green'>NICE</span></p>","data":{"type":"old","condition":"semantic_produced","list":"SWEET","word":"nice"}},

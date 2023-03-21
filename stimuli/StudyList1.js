@@ -1,4 +1,4 @@
-studywords: [
+studywords1 = [
 {"stimulus":"<p style='font-size: 48px;'><span style='color: green'>UMBRELLA</span></p>","data":{"type":"old","condition":"semantic_produced","list":"RAIN","word":"umbrella"}},
 {"stimulus":"<p style='font-size: 48px;'><span style='color: green'>DRENCH</span></p>","data":{"type":"old","condition":"semantic_produced","list":"RAIN","word":"drench"}},
 {"stimulus":"<p style='font-size: 48px;'><span style='color: green'>WEATHER</span></p>","data":{"type":"old","condition":"semantic_produced","list":"RAIN","word":"weather"}},

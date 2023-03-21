@@ -1,4 +1,4 @@
-studylist = [
+studywords6 = [
 {"stimulus":"<p style='font-size: 48px;'><span style='color: green'>SLAY</span></p>","data":{"type":"old","condition":"semantic_produced","list":"KILL","word":"slay"}},
 {"stimulus":"<p style='font-size: 48px;'><span style='color: green'>SUICIDE</span></p>","data":{"type":"old","condition":"semantic_produced","list":"KILL","word":"suicide"}},
 {"stimulus":"<p style='font-size: 48px;'><span style='color: green'>VIOLENCE</span></p>","data":{"type":"old","condition":"semantic_produced","list":"KILL","word":"violence"}},
