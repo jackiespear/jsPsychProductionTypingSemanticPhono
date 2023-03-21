@@ -43,16 +43,9 @@ jsPsych.data.addProperties({
   condition: condition_assignment
 });
 
-console.log(condition_assignment);
+//console.log(condition_assignment);
 
-//trial information for each condition -  will call a different list depending on condition
-//var list_1 = study_words_pureproduce;
-//var list_2 = study_words_pureread;
-//var list_3 = study_words_mixed;
-//
-//var list_1T = test_words_pureproduce;
-//var list_2T = test_words_pureread;
-//var list_3T = test_words_mixed;
+
 
 // create a variable to hold the trial information, which changes based on condition
 var stimuli = [];
@@ -77,9 +70,9 @@ if (condition_assignment == "List1") { //if List1 is sampled from above randomiz
   stimuli_test = testwords6;
 };  
 
-console.table(stimuli);
+//console.table(stimuli);
 //console.log(stimuli);
-console.table(stimuli_test);
+//console.table(stimuli_test);
 
 </script>
 
@@ -317,8 +310,8 @@ var study_instructions123 = {
         return html;
     },
     html:  '<p> <input type="text" onkeydown="return (event.keycode!=13);" id="test-resp-box" name="response" size="10" style=color:white;/></p>', //color being white will not mirror typed word to the screen
-    post_trial_gap: 500, // changing this to 3 seconds so that each trail is equal (e.g. produce vs. read),
-    trial_duration: 100, //change back to 3000
+    post_trial_gap: 500, 
+    trial_duration: 3000, //change back to 3000
     data: {phase:"study", data: jsPsych.timelineVariable("data")},
     autofocus: 'test-resp-box',
     //timeline_variables: study_instructions,
@@ -485,28 +478,27 @@ var no_consent = {
 
 /*set up experiment structure*/
 var timeline = [];
-//timeline.push(consent);
-//timeline.push(no_consent);
-//timeline.push(welcome);
-//timeline.push(enter_full_screen);
+timeline.push(consent);
+timeline.push(no_consent);
+timeline.push(welcome);
+timeline.push(enter_full_screen);
 timeline.push(instructions);
-//timeline.push(study_procedure_practice);
-//timeline.push(practice_test_instructions);
-timeline.push(survey);
-timeline.push(study_procedure); // this is new
+timeline.push(study_procedure_practice);
+timeline.push(practice_test_instructions);
+timeline.push(study_procedure); 
 timeline.push(test_instructions);
 timeline.push(test_phase);
-//timeline.push(survey);
-//timeline.push(exit_full_screen);
-//timeline.push(debrief);
+timeline.push(survey);
+timeline.push(exit_full_screen);
+timeline.push(debrief);
 
 /*start experiment*/
 jsPsych.init({
     timeline: timeline,
     on_finish: function() {
-     //window.location.href = "https://umanitobapsych.sona-systems.com/webstudy_credit.aspx?experiment_id=1303&credit_token=a035fd3a62b541dcae118ab791f90307&survey_code="+SONA_ID; //changed
+     window.location.href = "https://umanitobapsych.sona-systems.com/webstudy_credit.aspx?experiment_id=1303&credit_token=a035fd3a62b541dcae118ab791f90307&survey_code="+SONA_ID; //changed
       // display data at end:
-      jsPsych.data.displayData(); //commented out for final version
+      //jsPsych.data.displayData(); //commented out for final version
     }
 });
 
