@@ -366,6 +366,7 @@ var question_trial_sex = {
   stimulus: '<p style="font-size:28px;">What is your sex assigned at birth?</p>',
   choices: ['Female', 'Male', 'Other', 'Prefer not to answer'],
   prompt: '<p>Please click one</p>',
+  data: {type: 'sex'},
   on_finish: function(data) {
               if (data.response == "0") {
                 data.sex = "Female";
@@ -387,6 +388,7 @@ var question_trial_gender = {
   preamble: '<p>What is is your gender?<br>(Leave blank if you prefer not to answer)</p>',
   html: '<p><input type="text" onkeydown="return (event.keycode!=13);" id="test-resp-box2" name="gender" size="10" style=color:black;/></p>',
   autofocus: 'test-resp-box2',
+  data: {type: 'gender'},
 };
 
 var question_trial_age = {
@@ -396,6 +398,7 @@ var question_trial_age = {
   preamble: '<p>What is is your age?<br>(Leave blank if you prefer not to answer)</p>',
   html: '<p><input type="text" onkeydown="return (event.keycode!=13);" id="test-resp-box2" name="age" size="10" style=color:black;/></p>',
   autofocus: 'test-resp-box2',
+  data: {type: 'age'},
 };
 
 var question_trial_english = {
@@ -403,6 +406,7 @@ var question_trial_english = {
   stimulus: '<p style="font-size:28px;">Is English your first language?</p>',
   choices: ['Yes', 'No', 'Prefer not to answer'],
   prompt: '<p>Please click one</p>',
+  data: {type: 'english'},
   on_finish: function(data) {
               if (data.response == "0") {
                 data.english = "Yes";
