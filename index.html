@@ -40,7 +40,7 @@
 
 var condition_assignment = jsPsych.randomization.sampleWithoutReplacement(['List1', 'List2', 'List3','List4','List5','List6'], 1)[0];
 jsPsych.data.addProperties({
-  condition: condition_assignment
+  condition_list : condition_assignment
 });
 
 //console.log(condition_assignment);
