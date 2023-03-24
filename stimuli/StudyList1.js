@@ -12,7 +12,7 @@ studywords1 = [
 {"stimulus": "<p style='font-size: 48px;'><span style='color: green'>COUCH</span></p>", "data": {"type": "old", "condition": "semantic_produced", "list": "CHAIR", "word": "couch"}},
 {"stimulus": "<p style='font-size: 48px;'><span style='color: green'>ROCKING</span></p>", "data": {"type": "old", "condition": "semantic_produced", "list": "CHAIR", "word": "rocking"}},
 {"stimulus": "<p style='font-size: 48px;'><span style='color: green'>FIRE</span></p>", "data": {"type": "old", "condition": "semantic_produced", "list": "SMOKE", "word": "fire"}},
-{"stimulus": "<p style='font-size: 48px;'><span style='color: green'>NICOTINE</span></p>", "data": {"type": "old", "condition": "semantic_produced", "list": "SMOKE", "word": "nicotine"},}
+{"stimulus": "<p style='font-size: 48px;'><span style='color: green'>NICOTINE</span></p>", "data": {"type": "old", "condition": "semantic_produced", "list": "SMOKE", "word": "nicotine"}},
 {"stimulus": "<p style='font-size: 48px;'><span style='color: green'>CIGAR</span></p>", "data": {"type": "old", "condition": "semantic_produced", "list": "SMOKE", "word": "cigar"}},
 {"stimulus": "<p style='font-size: 48px;'><span style='color: green'>RYE</span></p>", "data": {"type": "old", "condition": "semantic_produced", "list": "BREAD", "word": "rye"}},
 {"stimulus": "<p style='font-size: 48px;'><span style='color: green'>LOAF</span></p>", "data": {"type": "old", "condition": "semantic_produced", "list": "BREAD", "word": "loaf"}},
