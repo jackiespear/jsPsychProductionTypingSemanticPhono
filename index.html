@@ -38,7 +38,7 @@
 //                       Randomly Assign one of the between-subjects counterbalanced lists              //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-var condition_assignment = jsPsych.randomization.sampleWithoutReplacement(['List1', 'List6'], 1)[0];
+var condition_assignment = jsPsych.randomization.sampleWithoutReplacement(['List1', 'List3'], 1)[0];
 jsPsych.data.addProperties({
   condition_list : condition_assignment
 });
@@ -53,9 +53,9 @@ var stimuli_test= [];
 if (condition_assignment == "List1") { //if List1 is sampled from above randomization routine, the stimuli presented will be...
   stimuli = studywords1;
   stimuli_test = testwords1;
-} else if (condition_assignment == "List6") {
-  stimuli = studywords6;
-  stimuli_test = testwords6;
+} else if (condition_assignment == "List3") {
+  stimuli = studywords3;
+  stimuli_test = testwords3;
 };
 
 //original randomization procedure
